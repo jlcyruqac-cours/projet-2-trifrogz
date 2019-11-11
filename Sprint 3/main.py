@@ -3,45 +3,92 @@ import tkinter as tk
 
 def interface_gui():
     window = tk.Tk()
-    liste_numero = []
-    dict_numero = {}
+    window.title("Software softphone")
+    liste_affichage_numero = []
+    liste_nom_contact = []
+    liste_numero_contact = []
+    dict_numero = {"numero_contact": liste_numero_contact, "nom_contact": liste_nom_contact}
 
     # Affichage de l'écriture de chiffre
     affichage_numero_pad = tk.Label(window, relief="ridge", padx=70)
     affichage_numero_pad.grid(row=1, column=2)
-    numero = affichage_numero_pad.cget("text")
-    affichage_numero_pad["text"] = numero
+
+    affichage_numero_pad["text"] = affichage_numero_pad.cget("text")
 
     def add_char(char):
         affichage_numero_pad["text"] = ""
-        liste_numero.append(char)
-        for position_char in range(len(liste_numero)):
-            affichage_numero_pad["text"] += str(liste_numero[position_char])
+        liste_affichage_numero.append(char)
+        for position_char in range(len(liste_affichage_numero)):
+            affichage_numero_pad["text"] += str(liste_affichage_numero[position_char])
 
     def delete_char():
-        del liste_numero[-1]
-        affichage_numero_pad["text"] = ""
-        for position_char in range(len(liste_numero)):
-            affichage_numero_pad["text"] += str(liste_numero[position_char])
+        if liste_affichage_numero:
+            del liste_affichage_numero[-1]
+            affichage_numero_pad["text"] = ""
+            for position_char in range(len(liste_affichage_numero)):
+                affichage_numero_pad["text"] += str(liste_affichage_numero[position_char])
 
     def enregistrer():
         def callback():
-            dict_numero[affichage_numero_pad["text"]] = nom.get()
+            nom_contact = nom_entry.get()
+            liste_nom_contact.append(nom_contact)
+            dict_numero["nom_contact"] = liste_nom_contact
+
+            numero_contact = numero_entry.get()
+            liste_numero_contact.append(numero_contact)
+            dict_numero["numero_contact"] = liste_numero_contact
+
             window_name.destroy()
 
         window_name = tk.Toplevel(window)
-        nom_label = tk.Label(window_name, text="Veuillez entrer le nom du nouveau contact :")
+        window_name.title("Création d'un nouveau contact")
+
+        nom_label = tk.Label(window_name, text="Veuillez entrer le nom du nouveau contact : ")
         nom_label.grid(row=1, column=1)
-        nom = tk.Entry(window_name)
-        nom.grid(row=2, column=1)
+        nom_entry = tk.Entry(window_name)
+        nom_entry.grid(row=1, column=2)
+
+        numero_label = tk.Label(window_name, text="Veuillez entrer son numéro : ")
+        numero_label.grid(row=2, column=1)
+        numero_entry = tk.Entry(window_name)
+        numero_entry.grid(row=2, column=2)
+
         enter = tk.Button(window_name, text="Enregistrer", command=callback)
         enter.grid(row=3, column=1)
 
-    def supprimer():
-        print(dict_numero)
+    def display_contact():
+        def fermer_et_enregistrer():
+            window_contact.destroy()
+            enregistrer()
 
-    def affichage_contact():
-        print("oui")
+        def supprimer(contact_a_supprimer):
+            del dict_numero["nom_contact"][contact_a_supprimer]
+            del dict_numero["numero_contact"][contact_a_supprimer]
+
+            window_contact.destroy()
+            display_contact()
+
+        window_contact = tk.Toplevel()
+        window_contact.title("Contacts")
+
+        bouton_enregistrer = tk.Button(window_contact, text="Enregistrer un nouveau contact",
+                                       command=fermer_et_enregistrer)
+        bouton_enregistrer.grid(row=3, column=1)
+
+        for contact in range(len(dict_numero['numero_contact'])):
+            nom_contact = "Nom : " + str(dict_numero["nom_contact"][contact])
+            nom_contact_label = tk.Label(window_contact, text=nom_contact)
+            nom_contact_label.grid(row=contact, column=1)
+
+            numero_contact = "N° : " + str(dict_numero["numero_contact"][contact])
+            numero_contact_label = tk.Label(window_contact, text=numero_contact)
+            numero_contact_label.grid(row=contact, column=2)
+
+            appeler_contact_bouton = tk.Button(window_contact, text="Appeler")
+            appeler_contact_bouton.grid(row=contact, column=3)
+
+            supprimer_contact_bouton = tk.Button(window_contact, text="Supprimer", command=lambda: supprimer(contact))
+            supprimer_contact_bouton.grid(row=contact, column=4)
 
     # Affichage des chiffres
     chiffre_1 = tk.Button(window, text="1", padx=20, command=lambda: add_char("1"))
@@ -75,28 +122,15 @@ def interface_gui():
     appeler = tk.Button(window, text="Appeler", padx=50)
     appeler.grid(row=6, column=2)
 
-    # Affichage des contacts
-    afficher_contact = tk.Label(window, text="Afficher contacts", relief="groove")
-    afficher_contact.grid(row=2, column=4)
-
-    # Naviguer dans les contacts enregistrés
-    fleche_up = tk.Button(window, text="up")
-    fleche_up.grid(row=2, column=5)
-    fleche_down = tk.Button(window, text="down")
-    fleche_down.grid(row=2, column=6)
-
     # Actions
-    supprimer_contact = tk.Button(window, text="Supprimer ce contact", command=supprimer)
-    supprimer_contact.grid(row=3, column=4)
-
-    enregistrer = tk.Button(window, text="Enregistrer ce numéro", command=enregistrer)
-    enregistrer.grid(row=4, column=4)
+    voir_contact = tk.Button(window, text="Voir les contacts", command=display_contact)
+    voir_contact.grid(row=2, column=4)
 
     boite_vocale = tk.Button(window, text="Ecouter messages")
-    boite_vocale.grid(row=5, column=4)
+    boite_vocale.grid(row=3, column=4)
 
     historique = tk.Button(window, text="Voir historique appels")
-    historique.grid(row=6, column=4)
+    historique.grid(row=4, column=4)
     window.mainloop()
 
 
