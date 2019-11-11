@@ -4,18 +4,44 @@ import tkinter as tk
 def interface_gui():
     window = tk.Tk()
     liste_numero = []
+    dict_numero = {}
 
     # Affichage de l'écriture de chiffre
-    affichage_numero = tk.Label(window, relief="ridge", padx=70)
-    affichage_numero.grid(row=1, column=2)
-    numero = affichage_numero.cget("text")
-    affichage_numero["text"] = numero
+    affichage_numero_pad = tk.Label(window, relief="ridge", padx=70)
+    affichage_numero_pad.grid(row=1, column=2)
+    numero = affichage_numero_pad.cget("text")
+    affichage_numero_pad["text"] = numero
 
     def add_char(char):
-        affichage_numero["text"] = ""
+        affichage_numero_pad["text"] = ""
         liste_numero.append(char)
         for position_char in range(len(liste_numero)):
-            affichage_numero["text"] += str(liste_numero[position_char])
+            affichage_numero_pad["text"] += str(liste_numero[position_char])
+
+    def delete_char():
+        del liste_numero[-1]
+        affichage_numero_pad["text"] = ""
+        for position_char in range(len(liste_numero)):
+            affichage_numero_pad["text"] += str(liste_numero[position_char])
+
+    def enregistrer():
+        def callback():
+            dict_numero[affichage_numero_pad["text"]] = nom.get()
+            window_name.destroy()
+
+        window_name = tk.Toplevel(window)
+        nom_label = tk.Label(window_name, text="Veuillez entrer le nom du nouveau contact :")
+        nom_label.grid(row=1, column=1)
+        nom = tk.Entry(window_name)
+        nom.grid(row=2, column=1)
+        enter = tk.Button(window_name, text="Enregistrer", command=callback)
+        enter.grid(row=3, column=1)
+
+    def supprimer():
+        print(dict_numero)
+
+    def affichage_contact():
+        print("oui")
 
     # Affichage des chiffres
     chiffre_1 = tk.Button(window, text="1", padx=20, command=lambda: add_char("1"))
@@ -42,6 +68,8 @@ def interface_gui():
     etoile.grid(row=5, column=1)
     diese = tk.Button(window, text="#", padx=20, command=lambda: add_char("#"))
     diese.grid(row=5, column=3)
+    supp_char = tk.Button(window, text="<-", padx=20, command=delete_char)
+    supp_char.grid(row=6, column=1)
 
     # Bouton pour appeler
     appeler = tk.Button(window, text="Appeler", padx=50)
@@ -53,14 +81,22 @@ def interface_gui():
 
     # Naviguer dans les contacts enregistrés
     fleche_up = tk.Button(window, text="up")
-    fleche_up.grid(row=3, column=4)
+    fleche_up.grid(row=2, column=5)
     fleche_down = tk.Button(window, text="down")
-    fleche_down.grid(row=4, column=4)
+    fleche_down.grid(row=2, column=6)
 
     # Actions
+    supprimer_contact = tk.Button(window, text="Supprimer ce contact", command=supprimer)
+    supprimer_contact.grid(row=3, column=4)
+
+    enregistrer = tk.Button(window, text="Enregistrer ce numéro", command=enregistrer)
+    enregistrer.grid(row=4, column=4)
+
     boite_vocale = tk.Button(window, text="Ecouter messages")
     boite_vocale.grid(row=5, column=4)
 
+    historique = tk.Button(window, text="Voir historique appels")
+    historique.grid(row=6, column=4)
     window.mainloop()
 
 
