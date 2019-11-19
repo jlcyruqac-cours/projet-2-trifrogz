@@ -1,9 +1,11 @@
 import tkinter as tk
+import os
 
 
 def interface_gui():
     window = tk.Tk()
     window.title("Software softphone")
+    connected = False
 
     class LoginDialog(tk.Toplevel):
         def __init__(self, parent):
@@ -25,7 +27,12 @@ def interface_gui():
         def connect(self):
             login = self.entry_login.get().strip()
             key = self.entry_pass.get().strip()
-
+            print(os.getcwd())
+            with open("login.txt", "r") as f:
+                fichier_entier = f.read()
+                line = fichier_entier.split("\n")
+                print(line)
+            connected = True
             self.destroy()
 
     def connect():
