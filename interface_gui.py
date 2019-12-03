@@ -1,5 +1,43 @@
 import tkinter as tk
 from tkinter import messagebox
+import pjsua as pj
+
+
+LOG_LEVEL=3
+current_call = None
+
+
+def log_cb(level, str, len):
+    print(str)
+
+
+class MyCallCallback(pj.CallCallback):
+
+    def __init__(self, call=None):
+        pj.CallCallback.__init__(self, call)
+
+    # Notification when call state has changed
+    def on_state(self):
+        global current_call
+        print("Call with", self.call.info().remote_uri)
+        print("is", self.call.info().state_text)
+        print("last code =", self.call.info().last_code)
+        print("(" + self.call.info().last_reason + ")")
+
+        if self.call.info().state == pj.CallState.DISCONNECTED:
+            current_call = None
+            print('Current call is', current_call)
+
+    # Notification when call's media state has changed.
+    def on_media_state(self):
+        if self.call.info().media_state == pj.MediaState.ACTIVE:
+            # Connect the call to sound device
+            call_slot = self.call.info().conf_slot
+            pj.Lib.instance().conf_connect(call_slot, 0)
+            pj.Lib.instance().conf_connect(0, call_slot)
+            print("Media is now active")
+        else:
+            print("Media is inactive")
 
 
 def interface_gui():
@@ -227,7 +265,6 @@ def interface_gui():
             supprimer_contact_bouton.grid(row=contact, column=4)
 
     window = Fenetre(window)
-
 
 if __name__ == '__main__':
     interface_gui()
