@@ -111,7 +111,8 @@ lib.start()
 domain = input("Votre addresse IP : ")
 username = input("Votre username : ")
 password = input("Votre mot de passe : ")
-acc = lib.create_account(pj.AccountConfig(domain=domain, username=username, password=password))
+# acc = lib.create_account(pj.AccountConfig(domain=domain, username=username, password=password))
+acc = lib.create_account_for_transport(transport, cb=MyAccountCallback())
 
 # If argument is specified then make call to the URI
 if len(sys.argv) > 1:
