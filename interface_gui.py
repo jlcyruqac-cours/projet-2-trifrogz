@@ -3,7 +3,7 @@ from tkinter import messagebox
 import pjsua as pj
 
 
-LOG_LEVEL=3
+LOG_LEVEL = 3
 current_call = None
 
 

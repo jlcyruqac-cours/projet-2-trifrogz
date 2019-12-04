@@ -1,27 +1,7 @@
-# $Id: call.py 2171 2008-07-24 09:01:33Z bennylp $
-#
-# SIP call sample.
-#
-# Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-#
 import sys
 import pjsua as pj
 
-LOG_LEVEL=3
+LOG_LEVEL = 3
 current_call = None
 
 
@@ -39,11 +19,11 @@ class MyAccountCallback(pj.AccountCallback):
     # Notification on incoming call
     @staticmethod
     def on_incoming_call(call):
-        global current_call 
+        global current_call
         if current_call:
             call.answer(486, "Busy")
             return
-            
+
         print("Incoming call from ", call.info().remote_uri)
         print("Press 'a' to answer")
 
@@ -68,7 +48,7 @@ class MyCallCallback(pj.CallCallback):
         print("is", self.call.info().state_text)
         print("last code =", self.call.info().last_code)
         print("(" + self.call.info().last_reason + ")")
-        
+
         if self.call.info().state == pj.CallState.DISCONNECTED:
             current_call = None
             print('Current call is', current_call)
@@ -89,14 +69,14 @@ class MyCallCallback(pj.CallCallback):
 def make_call(uri):
     print("Making call to", uri)
     return acc.make_call(uri, cb=MyCallCallback())
-        
+
 
 # Create library instance
 lib = pj.Lib()
 
 # Init library with default config and some customized
 # logging config.
-lib.init(log_cfg = pj.LogConfig(level=LOG_LEVEL, callback=log_cb))
+lib.init(log_cfg=pj.LogConfig(level=LOG_LEVEL, callback=log_cb))
 
 # Create UDP transport which listens to any available port
 transport = lib.create_transport(pj.TransportType.UDP,
